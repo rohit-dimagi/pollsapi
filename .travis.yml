@@ -30,6 +30,8 @@ jobs:
         - docker images
     - stage: docker_publish
       provider: script
-      script: bash docker_publish $DOCKER_USERNAME $DOCKER_PASSWORD
+      script:
+        - docker build -t $DOCKER_USERNAME/django:latest . 
+        - bash docker_publish $DOCKER_USERNAME $DOCKER_PASSWORD
       on:
         branch: master
