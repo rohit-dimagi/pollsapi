@@ -27,6 +27,7 @@ jobs:
       service: docker
       script:
         - docker build -t $DOCKER_USERNAME/django:latest .
+        - docker images
     - stage: docker_publish
       provider: script
       script: bash docker_publish $DOCKER_USERNAME $DOCKER_PASSWORD
