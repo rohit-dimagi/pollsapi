@@ -1,0 +1,29 @@
+language: python
+python:
+  - "3.7"
+
+jobs:
+  include:
+    - stage: build
+      script:
+        - pip install -r requirements.txt
+        - python manage.py collectstatic
+    - stage: test
+      services:
+        - postgresql
+      before_script: 
+        - psql -c "CREATE DATABASE polls;" -U postgres
+        - psql -c "CREATE USER testuser WITH PASSWORD '1234';" -U postgres
+        - psql -c "ALTER USER testuser CREATEDB;"
+      script:
+        - export POSTGRES_DB=polls
+        - export POSTGRES_USER=testuser
+        - export POSTGRES_PASSWORD=1234
+        - export POLLSAPI_PG_HOST=localhost
+        - python manage.py makemigrations
+        - python manage.py migrate
+        - python manage.py test
+    - stage: docker_build
+      service: docker
+      script:
+        - docker build -t pg/latest .
