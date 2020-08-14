@@ -26,4 +26,9 @@ jobs:
     - stage: docker_build
       service: docker
       script:
-        - docker build -t pg/latest .
+        - docker build -t rohitkumar1/django:django_latest .
+    - stage: docker_publish
+      provider: script
+      script: bash docker_publish $DOCKER_USERNAME $DOCKER_PASSWORD
+      on:
+        branch: master
